@@ -20,8 +20,9 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping
-    public List<User> fetchAllUsers(){
-        return userService.getAllUsers();
+    public ResponseEntity <List<User>> fetchAllUsers(){
+        List<User> response = userService.getAllUsers();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
     }
 
     @GetMapping("/{username}")

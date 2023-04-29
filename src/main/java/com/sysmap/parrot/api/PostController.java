@@ -30,8 +30,14 @@ public class PostController {
     }
 
     @PostMapping
-    public ResponseEntity<Post> createUser(@RequestBody CreatePostRequest request){
-        var response = postService.createPost(request);
+    public ResponseEntity<Post> createPost(@RequestBody CreatePostRequest request){
+        Post response = postService.createPost(request);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Post> editPost(@PathVariable String id, @RequestBody CreatePostRequest request){
+        Post response = postService.editPost(id, request);
         return ResponseEntity.status(200).body(response);
     }
 
