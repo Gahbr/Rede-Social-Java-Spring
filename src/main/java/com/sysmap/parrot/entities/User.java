@@ -1,6 +1,7 @@
 package com.sysmap.parrot.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -19,7 +20,9 @@ public class User {
 
     @Indexed(unique = true)
     private String email;
+
     @JsonIgnore
+    @Size(min = 8)
     private String password;
     private String avatar;
     private Followers followers;

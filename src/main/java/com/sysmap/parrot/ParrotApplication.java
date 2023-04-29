@@ -1,11 +1,9 @@
  package com.sysmap.parrot;
 
+import com.sysmap.parrot.data.PostRepository;
 import com.sysmap.parrot.data.StudentRepository;
 import com.sysmap.parrot.data.UserRepository;
-import com.sysmap.parrot.entities.Address;
-import com.sysmap.parrot.entities.Gender;
-import com.sysmap.parrot.entities.Student;
-import com.sysmap.parrot.entities.User;
+import com.sysmap.parrot.entities.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -13,7 +11,10 @@ import org.springframework.context.annotation.Bean;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
 
  @SpringBootApplication
 public class ParrotApplication {
@@ -22,7 +23,7 @@ public class ParrotApplication {
 		SpringApplication.run(ParrotApplication.class, args);
 	}
 
-// //Inserir dado manualmente
+// //Inserir dado manualmente STUDENT
 //	@Bean
 //	 CommandLineRunner runner(StudentRepository repository ){
 //		String email = "birb@birb.com";
@@ -42,6 +43,7 @@ public class ParrotApplication {
 //		};
 //	}
 
+	 //INSERINDO USUARIO MANUALMENTE
 //	@Bean
 //	 CommandLineRunner runner2(UserRepository repository ){
 //		 String email = "teste@teste.com";
@@ -51,4 +53,22 @@ public class ParrotApplication {
 //			 repository.insert(user);
 //		 };
 //	 }
+
+//	 //INSERINDO POST MANUALMENTE
+//	 @Bean
+//	 CommandLineRunner runner(PostRepository repository ){
+//
+//		 return args -> {
+//			 Post post = new Post();
+//			 post.setUserId("123123");
+//			 post.setContent("Ola´mundo");
+//			 post.setLikes(Arrays.asList(new Like(Collections.singletonList("644a8eb865940f60a469f182")), new Like(Collections.singletonList("644b0281d689aa399b5eac8a"))));
+//			 post.setComments(Arrays.asList(
+//					 new Comment("644a8eb865940f60a469f182", "Naruto kun", Arrays.asList(new Like(Collections.singletonList("123123")), new Like(Collections.singletonList("456455")))),
+//					 new Comment("644b0281d689aa399b5eac8a", "OIOIOIOI", null)
+//			 ));
+//			 repository.save(post);
+//		 };
+//	 }
+
 }

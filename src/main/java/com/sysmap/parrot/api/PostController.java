@@ -1,0 +1,43 @@
+package com.sysmap.parrot.api;
+
+import com.sysmap.parrot.entities.Post;
+import com.sysmap.parrot.services.CreatePostRequest;
+import com.sysmap.parrot.services.PostService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/posts")
+@AllArgsConstructor
+public class PostController {
+    private PostService postService;
+
+    @GetMapping
+    public ResponseEntity<List<Post>> fetchAllPosts(){
+        var response = postService.getAllPosts();
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Optional<Post>> fetchPostById(@PathVariable String id){
+        var response = postService.getPostById(id);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @PostMapping
+    public ResponseEntity<Post> createUser(@RequestBody CreatePostRequest request){
+        var response = postService.createPost(request);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> createUser(@PathVariable String id){
+        var response = postService.deletePost(id);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(response);
+    }
+}

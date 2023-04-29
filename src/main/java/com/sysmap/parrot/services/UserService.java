@@ -5,7 +5,6 @@ import com.sysmap.parrot.entities.User;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -24,9 +23,14 @@ public class UserService {
 
     public String createUser(CreateUserRequest request){
         var user = new User(request.getUsername(), request.getEmail(), request.getPassword());
-        userRepository.save(user);
 
-        return user.getId();
+        if(request.getUsername().isBlank() || request.getEmail().isBlank() || request.getPassword().isBlank()){
+            return "Não pode ter campo vazio!";
+        }else {
+            userRepository.save(user);
+            return user.getId();
+        }
+
     }
 
     public String editUser(String id, CreateUserRequest request) {

@@ -3,6 +3,7 @@ package com.sysmap.parrot.api;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.services.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
@@ -24,12 +25,13 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    public Optional<User> fetchUserByUsername(@PathVariable String username){
-        return userService.getUserByUsername(username);
+    public ResponseEntity<Optional<User>> fetchUserByUsername(@PathVariable String username){
+        Optional<User> response = userService.getUserByUsername(username);
+        return response.isPresent() ? ResponseEntity.status(200).body(response) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @PostMapping
-    public ResponseEntity<String> createUser(@RequestBody CreateUserRequest request){
+    public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request){
         var response = userService.createUser(request);
         return ResponseEntity.status(200).body(response);
     }
