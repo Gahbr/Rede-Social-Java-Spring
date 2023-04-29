@@ -1,11 +1,15 @@
 package com.sysmap.parrot.services;
 
 import com.sysmap.parrot.data.PostRepository;
+import com.sysmap.parrot.entities.Like;
 import com.sysmap.parrot.entities.Post;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,6 +44,32 @@ public class PostService {
 
         return post;
     }
+
+    public String likePost(String id, CreateLikePostRequest request) {
+        Optional<Post> optionalPost = postRepository.findById(id);
+        Post post = optionalPost.get();
+        String userId = request.getUserId();
+        boolean liked = false;
+
+        for (Like like : post.getLikes()) {
+            if (like.getUserId().toString().equals("["+userId+"]")) {
+                liked = true;
+                post.getLikes().remove(like);
+                break;
+            }
+        }
+
+        if (!liked) {
+            Like like = new Like(Collections.singletonList(userId));
+            post.getLikes().add(like);
+            postRepository.save(post);
+            return "Você deu like no post!";
+        } else {
+            postRepository.save(post);
+            return "Você retirou o like nesse post.";
+        }
+    }
+
     public String deletePost(String postId){
         Optional<Post> post = postRepository.findById(postId);
         postRepository.deleteById(postId);

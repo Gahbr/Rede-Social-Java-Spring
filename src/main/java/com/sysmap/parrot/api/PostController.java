@@ -1,7 +1,10 @@
 package com.sysmap.parrot.api;
 
+import com.sysmap.parrot.entities.Like;
 import com.sysmap.parrot.entities.Post;
+import com.sysmap.parrot.services.CreateLikePostRequest;
 import com.sysmap.parrot.services.CreatePostRequest;
+import com.sysmap.parrot.services.CreateUserRequest;
 import com.sysmap.parrot.services.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,6 +35,11 @@ public class PostController {
     @PostMapping
     public ResponseEntity<Post> createPost(@RequestBody CreatePostRequest request){
         Post response = postService.createPost(request);
+        return ResponseEntity.status(200).body(response);
+    }
+    @PostMapping("/posts/{id}/like")
+    public ResponseEntity<String> likePost(@PathVariable String id, @RequestBody CreateLikePostRequest request){
+       var response = postService.likePost(id, request);
         return ResponseEntity.status(200).body(response);
     }
 
