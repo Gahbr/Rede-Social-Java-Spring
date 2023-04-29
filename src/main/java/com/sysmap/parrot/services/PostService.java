@@ -3,6 +3,7 @@ package com.sysmap.parrot.services;
 import com.sysmap.parrot.data.PostRepository;
 import com.sysmap.parrot.entities.Like;
 import com.sysmap.parrot.entities.Post;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -45,7 +46,7 @@ public class PostService {
         return post;
     }
 
-    public String likePost(String id, CreateLikePostRequest request) {
+    public String likePost(String id, @NotNull CreateLikePostRequest request) {
         Optional<Post> optionalPost = postRepository.findById(id);
         Post post = optionalPost.get();
         String userId = request.getUserId();
@@ -59,7 +60,10 @@ public class PostService {
             }
         }
 
-        if (!liked) {
+        if(userId.isBlank()){
+            return "Insira um userID";
+        }
+        else if (!liked) {
             Like like = new Like(Collections.singletonList(userId));
             post.getLikes().add(like);
             postRepository.save(post);
