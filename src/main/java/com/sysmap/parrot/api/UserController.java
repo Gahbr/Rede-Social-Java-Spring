@@ -38,7 +38,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> editUser(@PathVariable String id,@RequestBody CreateUserRequest request){
+    public ResponseEntity<User> editUser(@PathVariable String id,@RequestBody CreateUserRequest request){
         var response = userService.editUser(id,request);
         return ResponseEntity.status(200).body(response);
     }

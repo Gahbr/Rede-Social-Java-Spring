@@ -32,16 +32,16 @@ public class UserService {
         }
     }
 
-    public String editUser(String id, CreateUserRequest request) {
+    public User editUser(String id, CreateUserRequest request) {
         Optional<User> optionalUser = userRepository.findById(id);
-
         User user = optionalUser.get();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
 
+        if(request.getUsername() != null && !request.getUsername().isEmpty()) user.setUsername(request.getUsername());
+        if(request.getEmail() != null && !request.getEmail().isEmpty()) user.setEmail(request.getEmail());
+        if(request.getPassword() != null && !request.getPassword().isEmpty()) user.setPassword(request.getPassword());
         userRepository.save(user);
-        return "Usuário " + request.getUsername() + " editado!";
+
+        return user;
     }
 
     public void deleteUser(String id) throws ChangeSetPersister.NotFoundException {
