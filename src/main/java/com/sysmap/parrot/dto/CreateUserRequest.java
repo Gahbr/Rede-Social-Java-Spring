@@ -1,6 +1,5 @@
-package com.sysmap.parrot.services;
+package com.sysmap.parrot.dto;
 
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data

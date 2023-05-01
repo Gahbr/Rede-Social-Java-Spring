@@ -1,8 +1,9 @@
-package com.sysmap.parrot.api;
+package com.sysmap.parrot.controller;
 
 import com.sysmap.parrot.entities.User;
-import com.sysmap.parrot.services.CreateUserRequest;
+import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
+import com.sysmap.parrot.dto.CreateFollowUserRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -34,6 +35,12 @@ public class UserController {
     @PostMapping
     public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request){
         var response = userService.createUser(request);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @PostMapping("/{id}/follow")
+    public ResponseEntity<String> followUser(@PathVariable String id, @RequestBody CreateFollowUserRequest request){
+        var response = userService.followUser(id,request);
         return ResponseEntity.status(200).body(response);
     }
 

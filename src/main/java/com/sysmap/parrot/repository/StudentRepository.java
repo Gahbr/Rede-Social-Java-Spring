@@ -1,4 +1,4 @@
-package com.sysmap.parrot.data;
+package com.sysmap.parrot.repository;
 
 import com.sysmap.parrot.entities.Student;
 import org.springframework.data.mongodb.repository.MongoRepository;

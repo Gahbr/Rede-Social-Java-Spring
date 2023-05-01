@@ -1,19 +1,7 @@
  package com.sysmap.parrot;
 
-import com.sysmap.parrot.data.PostRepository;
-import com.sysmap.parrot.data.StudentRepository;
-import com.sysmap.parrot.data.UserRepository;
-import com.sysmap.parrot.entities.*;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.Bean;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 
  @SpringBootApplication

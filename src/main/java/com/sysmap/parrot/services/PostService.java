@@ -1,11 +1,12 @@
 package com.sysmap.parrot.services;
 
-import com.sysmap.parrot.data.PostRepository;
+import com.sysmap.parrot.repository.PostRepository;
 import com.sysmap.parrot.entities.Like;
 import com.sysmap.parrot.entities.Post;
+import com.sysmap.parrot.dto.CreateLikePostRequest;
+import com.sysmap.parrot.dto.CreatePostRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -32,6 +33,8 @@ public class PostService {
             post.setTitle(request.getTitle());
             post.setContent(request.getContent());
             post.setCreated(LocalDateTime.now());
+            post.setLikes(new ArrayList<>());
+            post.setComments(new ArrayList<>());
         return postRepository.save(post);
     }
 

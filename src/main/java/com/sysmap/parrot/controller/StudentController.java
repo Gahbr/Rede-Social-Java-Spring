@@ -1,4 +1,4 @@
-package com.sysmap.parrot.api;
+package com.sysmap.parrot.controller;
 
 import com.sysmap.parrot.entities.Student;
 import com.sysmap.parrot.services.StudentService;

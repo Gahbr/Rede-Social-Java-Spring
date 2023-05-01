@@ -1,10 +1,8 @@
-package com.sysmap.parrot.api;
+package com.sysmap.parrot.controller;
 
-import com.sysmap.parrot.entities.Like;
 import com.sysmap.parrot.entities.Post;
-import com.sysmap.parrot.services.CreateLikePostRequest;
-import com.sysmap.parrot.services.CreatePostRequest;
-import com.sysmap.parrot.services.CreateUserRequest;
+import com.sysmap.parrot.dto.CreateLikePostRequest;
+import com.sysmap.parrot.dto.CreatePostRequest;
 import com.sysmap.parrot.services.PostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

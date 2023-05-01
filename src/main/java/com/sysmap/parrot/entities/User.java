@@ -8,6 +8,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @Document
 @Data
 @AllArgsConstructor
@@ -25,8 +27,8 @@ public class User {
     @Size(min = 8)
     private String password;
     private String avatar;
-    private Followers followers;
-    private Following following;
+    private List<Following> following;
+    private List<Followers> followers;
     private String description;
 
     public User() {

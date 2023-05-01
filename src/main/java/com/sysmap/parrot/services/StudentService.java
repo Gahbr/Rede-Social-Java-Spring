@@ -1,7 +1,7 @@
 package com.sysmap.parrot.services;
 
 import com.sysmap.parrot.entities.Student;
-import com.sysmap.parrot.data.StudentRepository;
+import com.sysmap.parrot.repository.StudentRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
