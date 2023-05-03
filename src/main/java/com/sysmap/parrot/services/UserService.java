@@ -1,5 +1,6 @@
 package com.sysmap.parrot.services;
 
+import com.sysmap.parrot.dto.AuthenticateResponse;
 import com.sysmap.parrot.dto.CreateLoginRequest;
 import com.sysmap.parrot.entities.Followers;
 import com.sysmap.parrot.repository.UserRepository;
@@ -7,6 +8,7 @@ import com.sysmap.parrot.entities.Following;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateFollowUserRequest;
 import com.sysmap.parrot.dto.CreateUserRequest;
+import com.sysmap.parrot.services.security.IJWTService;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -19,6 +21,7 @@ import java.util.*;
 @Service
 public class UserService {
     private final UserRepository userRepository;
+    private IJWTService _jwtService;
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -33,6 +36,8 @@ public class UserService {
         var user = new User(request.getUsername(), request.getEmail(), encoder.encode(request.getPassword()));
         user.setFollowing(new ArrayList<>());
         user.setFollowers(new ArrayList<>());
+        user.setAvatar("");
+        user.setDescription("");
 
         if(request.getUsername().isBlank() || request.getEmail().isBlank() || request.getPassword().isBlank()){
             return "Não pode ter campo vazio!";
@@ -43,17 +48,21 @@ public class UserService {
             return "Usuário criado com sucesso!";
         }
     }
-    public String loginUser(CreateLoginRequest request){
+
+    public AuthenticateResponse login(CreateLoginRequest request){
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
+        var response = new AuthenticateResponse();
 
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             if( encoder.matches(request.getPassword(), user.getPassword())){
-                //TODO - Gerar JWT
-                return "Password correto";
+                var token = _jwtService.generateToken(user.getId());
+                response.setUserId(user.getId());
+                response.setToken(token);
+                return response;
             }
-            else return "senha incorreta";
+            else throw new RuntimeException("Senha incorreta!");
         }else {
             throw new NoSuchElementException("Usuário não encontrado com o email: " + request.getEmail());
         }
@@ -61,11 +70,12 @@ public class UserService {
 
     public User editUser(String id, CreateUserRequest request) {
         Optional<User> optionalUser = userRepository.findById(id);
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
         User user = optionalUser.get();
 
         if(request.getUsername() != null && !request.getUsername().isEmpty()) user.setUsername(request.getUsername());
         if(request.getEmail() != null && !request.getEmail().isEmpty()) user.setEmail(request.getEmail());
-        if(request.getPassword() != null && !request.getPassword().isEmpty()) user.setPassword(request.getPassword());
+        if(request.getPassword() != null && !request.getPassword().isEmpty()) user.setPassword(encoder.encode(request.getPassword()));
         userRepository.save(user);
 
         return user;

@@ -3,6 +3,7 @@ package com.sysmap.parrot.controller;
 import com.sysmap.parrot.dto.CreateLoginRequest;
 import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
+import com.sysmap.parrot.dto.AuthenticateResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,8 @@ public class AuthenticationController {
         return ResponseEntity.status(200).body(response);
     }
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody CreateLoginRequest request){
-        var response = userService.loginUser(request);
+    public ResponseEntity<AuthenticateResponse> loginUser(@Valid @RequestBody CreateLoginRequest request){
+        var response = userService.login(request);
         return ResponseEntity.status(200).body(response);
     }
 }
