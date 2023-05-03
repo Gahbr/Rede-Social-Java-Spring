@@ -1,5 +1,6 @@
 package com.sysmap.parrot.controller;
 
+import com.sysmap.parrot.dto.CreateLoginRequest;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
@@ -30,12 +31,6 @@ public class UserController {
     public ResponseEntity<Optional<User>> fetchUserByUsername(@PathVariable String username){
         Optional<User> response = userService.getUserByUsername(username);
         return response.isPresent() ? ResponseEntity.status(200).body(response) : ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
-
-    @PostMapping
-    public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request){
-        var response = userService.createUser(request);
-        return ResponseEntity.status(200).body(response);
     }
 
     @PostMapping("/{id}/follow")

@@ -1,7 +1,7 @@
 package com.sysmap.parrot.services;
 
+import com.sysmap.parrot.dto.CreateLoginRequest;
 import com.sysmap.parrot.entities.Followers;
-import com.sysmap.parrot.entities.Like;
 import com.sysmap.parrot.repository.UserRepository;
 import com.sysmap.parrot.entities.Following;
 import com.sysmap.parrot.entities.User;
@@ -10,12 +10,10 @@ import com.sysmap.parrot.dto.CreateUserRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @AllArgsConstructor
 @Service
@@ -31,15 +29,33 @@ public class UserService {
     }
 
     public String createUser(CreateUserRequest request){
-        var user = new User(request.getUsername(), request.getEmail(), request.getPassword());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
+        var user = new User(request.getUsername(), request.getEmail(), encoder.encode(request.getPassword()));
         user.setFollowing(new ArrayList<>());
         user.setFollowers(new ArrayList<>());
 
         if(request.getUsername().isBlank() || request.getEmail().isBlank() || request.getPassword().isBlank()){
             return "Não pode ter campo vazio!";
+        }else if ( userRepository.findByUsername(request.getUsername()).isPresent() ||userRepository.findByEmail(request.getEmail()).isPresent() ) {
+            throw new IllegalArgumentException("Um usuário com esse username ou e-mail já existe");
         }else {
             userRepository.save(user);
-            return user.getId();
+            return "Usuário criado com sucesso!";
+        }
+    }
+    public String loginUser(CreateLoginRequest request){
+        Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
+
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            if( encoder.matches(request.getPassword(), user.getPassword())){
+                //TODO - Gerar JWT
+                return "Password correto";
+            }
+            else return "senha incorreta";
+        }else {
+            throw new NoSuchElementException("Usuário não encontrado com o email: " + request.getEmail());
         }
     }
 
