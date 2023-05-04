@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/profiles")
+@RequestMapping("api/v1/profiles")
 @AllArgsConstructor
 public class UserController {
     private final UserService userService;
