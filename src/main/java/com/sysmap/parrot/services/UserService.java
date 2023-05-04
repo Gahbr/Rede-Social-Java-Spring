@@ -30,6 +30,9 @@ public class UserService {
     public Optional<User> getUserByUsername(String username){
         return userRepository.findByUsername(username);
     }
+    public Optional<User> getUserById(String userId){
+        return userRepository.findById(userId);
+    }
 
     public String createUser(CreateUserRequest request){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);

@@ -1,5 +1,6 @@
 package com.sysmap.parrot.services.security;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
 
 @Service
 public class JWTService implements IJWTService {
@@ -26,5 +28,40 @@ public class JWTService implements IJWTService {
 
     private Key genSignInKey(){
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(KEY));
+    }
+
+//    public boolean isValidToken(String token, String userId){
+//            var claims = Jwts.parserBuilder()
+//                                    .setSigningKey(genSignInKey())
+//                                    .build().parseClaimsJws(token)
+//                                    .getBody();
+//
+//            String sub = claims.getSubject();
+//            var tokenExpiration = claims.getExpiration();
+//
+//            return sub.equals(userId) && !tokenExpiration.before(new Date());
+//    }
+
+
+    public boolean isValidToken(String token, String userId) {
+        var sub = getClaim(token, Claims::getSubject);
+        var tokenExpiration = getClaim(token, Claims::getExpiration);
+
+        if(!sub.equals(userId)){
+            return false;
+        }
+
+        if(tokenExpiration.before(new Date())){
+            return false;
+        }
+        return true;
+    }
+
+    private <T> T getClaim(String token, Function<Claims, T> claimsResolver) {
+        var claims = Jwts.parserBuilder()
+                                   .setSigningKey(genSignInKey())
+                                   .build().parseClaimsJws(token)
+                                   .getBody();
+        return claimsResolver.apply(claims);
     }
 }

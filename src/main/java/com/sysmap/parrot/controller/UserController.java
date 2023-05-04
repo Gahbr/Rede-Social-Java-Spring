@@ -1,11 +1,10 @@
 package com.sysmap.parrot.controller;
 
-import com.sysmap.parrot.dto.CreateLoginRequest;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
 import com.sysmap.parrot.dto.CreateFollowUserRequest;
-import jakarta.validation.Valid;
+import com.sysmap.parrot.services.security.IJWTService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
@@ -56,6 +55,4 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve algum erro ao deletar o usuário com o ID " + id);
         }
     }
-
-
 }
