@@ -5,6 +5,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -30,19 +31,6 @@ public class JWTService implements IJWTService {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(KEY));
     }
 
-//    public boolean isValidToken(String token, String userId){
-//            var claims = Jwts.parserBuilder()
-//                                    .setSigningKey(genSignInKey())
-//                                    .build().parseClaimsJws(token)
-//                                    .getBody();
-//
-//            String sub = claims.getSubject();
-//            var tokenExpiration = claims.getExpiration();
-//
-//            return sub.equals(userId) && !tokenExpiration.before(new Date());
-//    }
-
-
     public boolean isValidToken(String token, String userId) {
         var sub = getClaim(token, Claims::getSubject);
         var tokenExpiration = getClaim(token, Claims::getExpiration);
@@ -63,5 +51,13 @@ public class JWTService implements IJWTService {
                                    .build().parseClaimsJws(token)
                                    .getBody();
         return claimsResolver.apply(claims);
+    }
+
+    public String getLoggedUserId(){
+        String loggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
+        int startIndex = loggedInUser.indexOf("id=") + 3;
+        int endIndex = loggedInUser.indexOf(",", startIndex);
+
+        return loggedInUser.substring(startIndex, endIndex);
     }
 }
