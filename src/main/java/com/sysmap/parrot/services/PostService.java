@@ -1,6 +1,7 @@
 package com.sysmap.parrot.services;
 
 import com.amazonaws.services.pi.model.NotAuthorizedException;
+import com.sysmap.parrot.entities.Following;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.repository.PostRepository;
 import com.sysmap.parrot.entities.Like;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -28,6 +30,34 @@ public class PostService {
     public List<Post> getAllPosts(){
         return postRepository.findAll();
     }
+
+    public List<Post> getFriendPosts() {
+        String userId = _jwtService.getLoggedUserId();
+        Optional<User> optionalUser = _userService.getUserById(userId);
+        if (optionalUser.isEmpty()) {
+            throw new NoSuchElementException("Usuário não encontrado com o ID: " + userId);
+        }
+
+        User user = optionalUser.get();
+        List<String> followingUserIds = new ArrayList<>();
+        for (Following following : user.getFollowing()) {
+            followingUserIds.addAll(following.getUsers());
+        }
+
+        List<Post> allPosts = postRepository.findAll();
+        List<Post> friendPosts = new ArrayList<>();
+        for (Post post : allPosts) {
+            if (followingUserIds.contains(post.getUserId())) {
+                friendPosts.add(post);
+            }
+        }
+        return friendPosts;
+    }
+
+
+
+
+
     public Optional<Post> getPostById(String id){
         return postRepository.findById(id);
     }

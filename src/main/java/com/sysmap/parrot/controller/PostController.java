@@ -27,6 +27,11 @@ public class PostController {
         return ResponseEntity.status(200).body(response);
     }
 
+    @GetMapping("/feed")
+    public ResponseEntity<List<Post>> fetchFeed(){
+        var response = postService.getFriendPosts();
+        return ResponseEntity.status(200).body(response);
+    }
     @GetMapping("/{id}")
     public ResponseEntity<Optional<Post>> fetchPostById(@PathVariable String id){
         var response = postService.getPostById(id);
