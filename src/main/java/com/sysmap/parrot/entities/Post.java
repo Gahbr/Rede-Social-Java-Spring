@@ -16,7 +16,8 @@ public class Post {
     private String id;
     private String userId;
     private String Title;
-    private String content;
+    private String description;
+    private String image;
     private List<Like> likes;
     private List<Comment> comments;
     private LocalDateTime created;

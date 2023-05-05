@@ -13,8 +13,6 @@ import com.sysmap.parrot.services.security.IJWTService;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -126,17 +124,10 @@ public class UserService {
     }
 
     public String uploadAvatar(MultipartFile photo) throws Exception {
-        //  var user  = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        String loggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
-            int startIndex = loggedInUser.indexOf("id=") + 3;
-            int endIndex = loggedInUser.indexOf(",", startIndex);
-            String id = loggedInUser.substring(startIndex, endIndex);
-
+        String id = _jwtService.getLoggedUserId();
+        String photoUri = "";
         Optional<User> optionalUser = userRepository.findById(id);
         User user = optionalUser.get();
-
-        String photoUri = "";
-
         var fileName = user.getId() + "." + photo.getOriginalFilename().substring(photo.getOriginalFilename().lastIndexOf(".")+ 1);
 
         try{
@@ -148,7 +139,7 @@ public class UserService {
 
         user.setAvatar(photoUri);
         userRepository.save(user);
-        return photoUri;
+        return "avatar: " + photoUri;
     }
 }
 

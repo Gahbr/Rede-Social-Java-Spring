@@ -4,9 +4,13 @@ import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
 import com.sysmap.parrot.dto.CreateFollowUserRequest;
+import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,14 +60,17 @@ public class UserController {
         }
     }
 
-    @PostMapping("/photo/upload")
-    public ResponseEntity<String> uploadAvatar(@RequestParam("photo") MultipartFile photo){
-    try {
-      var response =  userService.uploadAvatar(photo);
+    @PostMapping(value = "/photo/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<String> uploadAvatar(
+            @ApiParam(value = "Avatar do usuário", required = true)
+            @RequestPart("photo") MultipartFile photo) {
+        try {
+            var response = userService.uploadAvatar(photo);
 
-      return ResponseEntity.status(200).body(response);
-    }catch (Exception e){
-        return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
-    }
+
 }
