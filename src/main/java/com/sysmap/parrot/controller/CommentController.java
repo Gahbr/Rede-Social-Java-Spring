@@ -1,7 +1,6 @@
 package com.sysmap.parrot.controller;
 
 import com.sysmap.parrot.dto.CreateCommentRequest;
-import com.sysmap.parrot.dto.CreateLikePostRequest;
 import com.sysmap.parrot.entities.Comment;
 import com.sysmap.parrot.services.CommentService;
 import lombok.AllArgsConstructor;
@@ -22,9 +21,20 @@ public class CommentController {
         return ResponseEntity.status(200).body(response);
     }
 
+    @GetMapping("/{commentId}")
+    public ResponseEntity<Comment> getCommentById(@PathVariable String postId, @PathVariable String commentId){
+        var response = commentService.getCommentById(postId, commentId);
+        return ResponseEntity.status(200).body(response);
+    }
     @PostMapping
     public ResponseEntity<Comment> newComment(@PathVariable String postId, @RequestBody CreateCommentRequest request){
         var response = commentService.createComment(postId, request);
+        return ResponseEntity.status(200).body(response);
+    }
+
+    @PutMapping("/{commentId}/like")
+    public ResponseEntity<Comment> likeComment(@PathVariable String postId, @PathVariable String commentId){
+        var response = commentService.likeComment(postId,commentId);
         return ResponseEntity.status(200).body(response);
     }
 
@@ -40,5 +50,4 @@ public class CommentController {
         return ResponseEntity.status(200).body(response);
     }
 
-    //TODO Dar like em comentário
 }
