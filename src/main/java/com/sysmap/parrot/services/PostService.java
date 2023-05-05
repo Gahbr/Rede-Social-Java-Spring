@@ -65,7 +65,17 @@ public class PostService {
 
     public Post editPost(String id, CreatePostRequest request) {
         Optional<Post> optionalPost = postRepository.findById(id);
+        Optional<User> optionalUser = _userService.getUserById(request.getUserId());
+
+        if (optionalPost.isEmpty() || optionalUser.isEmpty()) {
+            throw new NoSuchElementException("Post ou usuário não encontrado ");
+        }
+
         Post post = optionalPost.get();
+
+        if(!Objects.equals(post.getUserId(), _jwtService.getLoggedUserId())) {
+            throw new NotAuthorizedException("Você não é o autor do post!");
+        }
 
         if(request.getDescription() != null && !request.getDescription().isEmpty()) post.setDescription(request.getDescription());
         if(request.getTitle() != null && !request.getTitle().isEmpty()) post.setTitle(request.getTitle());
@@ -103,9 +113,17 @@ public class PostService {
     }
 
     public String deletePost(String postId){
-        Optional<Post> post = postRepository.findById(postId);
-        postRepository.deleteById(postId);
+        Optional<Post> optionalPost = postRepository.findById(postId);
+        if (optionalPost.isEmpty()) {
+            throw new NoSuchElementException("Post não encontrado com esse id: " + postId);
+        }
+        Post post = optionalPost.get();
 
+        if (!Objects.equals(post.getUserId(), _jwtService.getLoggedUserId())) {
+            throw new NotAuthorizedException("Você não é o autor do post!");
+        }
+
+        postRepository.deleteById(postId);
         return "Post deletado com sucesso";
     }
 }

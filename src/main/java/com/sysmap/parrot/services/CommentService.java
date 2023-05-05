@@ -1,9 +1,12 @@
 package com.sysmap.parrot.services;
 
+import com.amazonaws.services.pi.model.NotAuthorizedException;
 import com.sysmap.parrot.dto.CreateCommentRequest;
 import com.sysmap.parrot.entities.Comment;
+import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.repository.PostRepository;
 import com.sysmap.parrot.entities.Post;
+import com.sysmap.parrot.services.security.IJWTService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +15,9 @@ import java.util.*;
 @AllArgsConstructor
 @Service
 public class CommentService {
-
     private final PostRepository postRepository;
+    private IJWTService _jwtService;
+    private UserService _userService;
 
     public List<Comment> getComments(String postId) {
         Optional<Post> optionalPost = postRepository.findById(postId);
@@ -26,11 +30,18 @@ public class CommentService {
 
     public Comment createComment(String postId, CreateCommentRequest request) {
         Optional<Post> optionalPost = postRepository.findById(postId);
-        if (optionalPost.isEmpty()) {
-            throw new NoSuchElementException("Post not found with id: " + postId);
+        Optional<User> optionalUser = _userService.getUserById(request.getUserId());
+
+        if (optionalPost.isEmpty() || optionalUser.isEmpty()) {
+            throw new NoSuchElementException("Post ou usuário não encontrado ");
+        }
+
+        if(!Objects.equals(request.getUserId(), _jwtService.getLoggedUserId())) {
+            throw new NotAuthorizedException("Você só pode criar um comentário com o seu id!");
         }
 
         Post post = optionalPost.get();
+
         Comment comment = new Comment();
         comment.setId(UUID.randomUUID().toString());
         comment.setUserId(request.getUserId());
@@ -44,10 +55,15 @@ public class CommentService {
     }
 
     public Comment editComment(String postId, String commentId, CreateCommentRequest request) {
-        //TODO - validar se quem está editando é o autor do comentário
+        if(!Objects.equals(request.getUserId(), _jwtService.getLoggedUserId())) {
+            throw new NotAuthorizedException("Você não é o autor do comentário!");
+        }
 
         Optional<Post> optionalPost = postRepository.findById(postId);
-        if (optionalPost.isPresent()) {
+        if(optionalPost.isEmpty()){
+            throw new NoSuchElementException("Post não encontrado com o ID: " + postId);
+        }
+
             Post post = optionalPost.get();
             List<Comment> comments = post.getComments();
             for (Comment comment : comments) {
@@ -58,9 +74,6 @@ public class CommentService {
                 }
             }
             throw new NoSuchElementException("Comentário não encontrado com o ID: " + commentId);
-        } else {
-            throw new NoSuchElementException("Post não encontrado com o ID: " + postId);
-        }
     }
 
     public String deleteComment(String postId, String commentId) {
