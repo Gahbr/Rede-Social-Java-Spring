@@ -8,12 +8,16 @@ import com.sysmap.parrot.entities.Following;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateFollowUserRequest;
 import com.sysmap.parrot.dto.CreateUserRequest;
+import com.sysmap.parrot.services.fileUpload.IFileUploadService;
 import com.sysmap.parrot.services.security.IJWTService;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -22,6 +26,7 @@ import java.util.*;
 public class UserService {
     private final UserRepository userRepository;
     private IJWTService _jwtService;
+    private IFileUploadService _fileUploadService;
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -120,5 +125,30 @@ public class UserService {
         System.out.println("Usuário deletado com sucesso!");
     }
 
+    public String uploadAvatar(MultipartFile photo) throws Exception {
+        //  var user  = ((User) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        String loggedInUser = SecurityContextHolder.getContext().getAuthentication().getName();
+            int startIndex = loggedInUser.indexOf("id=") + 3;
+            int endIndex = loggedInUser.indexOf(",", startIndex);
+            String id = loggedInUser.substring(startIndex, endIndex);
+
+        Optional<User> optionalUser = userRepository.findById(id);
+        User user = optionalUser.get();
+
+        String photoUri = "";
+
+        var fileName = user.getId() + "." + photo.getOriginalFilename().substring(photo.getOriginalFilename().lastIndexOf(".")+ 1);
+
+        try{
+            photoUri = _fileUploadService.upload(photo, fileName);
+
+        }catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+
+        user.setAvatar(photoUri);
+        userRepository.save(user);
+        return photoUri;
+    }
 }
 

@@ -4,15 +4,12 @@ import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
 import com.sysmap.parrot.dto.CreateFollowUserRequest;
-import com.sysmap.parrot.services.security.IJWTService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
@@ -57,5 +54,16 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve algum erro ao deletar o usuário com o ID " + id);
         }
+    }
+
+    @PostMapping("/photo/upload")
+    public ResponseEntity<String> uploadAvatar(@RequestParam("photo") MultipartFile photo){
+    try {
+      var response =  userService.uploadAvatar(photo);
+
+      return ResponseEntity.status(200).body(response);
+    }catch (Exception e){
+        return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
     }
 }
