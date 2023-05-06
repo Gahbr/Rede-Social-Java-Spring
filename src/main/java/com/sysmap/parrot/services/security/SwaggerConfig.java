@@ -34,8 +34,8 @@ public class SwaggerConfig {
                                 .in(SecurityScheme.In.HEADER)
                                 .description("Insira o userId")))
                 .info(new Info()
-                        .title("Rede social Full-stack Parrot")
-                        .description("Documentação SWAGGER do sistema de rede social da Sysmap.")
+                        .title("Rede social Parrot - Back-end")
+                        .description("Documentação SWAGGER do projeto final do Programa de Trainee SysMap de Excelência Full Stack | 3ª edição | Java")
                         .version("1.0.0"));
     }
 }
