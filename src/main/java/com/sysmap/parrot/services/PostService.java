@@ -6,18 +6,15 @@ import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.repository.PostRepository;
 import com.sysmap.parrot.entities.Like;
 import com.sysmap.parrot.entities.Post;
-import com.sysmap.parrot.dto.CreateLikePostRequest;
 import com.sysmap.parrot.dto.CreatePostRequest;
 import com.sysmap.parrot.services.fileUpload.IFileUploadService;
 import com.sysmap.parrot.services.security.IJWTService;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
@@ -53,10 +50,6 @@ public class PostService {
         }
         return friendPosts;
     }
-
-
-
-
 
     public Optional<Post> getPostById(String id){
         return postRepository.findById(id);
@@ -114,10 +107,10 @@ public class PostService {
         return post;
     }
 
-    public String likePost(String id, @NotNull CreateLikePostRequest request) {
+    public String likePost(String id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         Post post = optionalPost.get();
-        String userId = request.getUserId();
+        String userId =  _jwtService.getLoggedUserId();
         boolean liked = false;
 
         for (Like like : post.getLikes()) {

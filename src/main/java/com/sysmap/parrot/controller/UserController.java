@@ -3,10 +3,7 @@ package com.sysmap.parrot.controller;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.UserService;
-import com.sysmap.parrot.dto.CreateFollowUserRequest;
 import io.swagger.annotations.*;
-import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
@@ -37,8 +34,8 @@ public class UserController {
     }
 
     @PostMapping("/{id}/follow")
-    public ResponseEntity<String> followUser(@PathVariable String id, @RequestBody CreateFollowUserRequest request){
-        var response = userService.followUser(id,request);
+    public ResponseEntity<String> followUser(@PathVariable String id){
+        var response = userService.followUser(id);
         return ResponseEntity.status(200).body(response);
     }
 

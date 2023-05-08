@@ -6,12 +6,13 @@ import com.sysmap.parrot.entities.Followers;
 import com.sysmap.parrot.repository.UserRepository;
 import com.sysmap.parrot.entities.Following;
 import com.sysmap.parrot.entities.User;
-import com.sysmap.parrot.dto.CreateFollowUserRequest;
 import com.sysmap.parrot.dto.CreateUserRequest;
+import com.sysmap.parrot.services.broker.IEventService;
 import com.sysmap.parrot.services.fileUpload.IFileUploadService;
 import com.sysmap.parrot.services.security.IJWTService;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class UserService {
     private final UserRepository userRepository;
     private IJWTService _jwtService;
     private IFileUploadService _fileUploadService;
+    @Autowired
+    private IEventService _eventService;
 
     public List<User> getAllUsers(){
         return userRepository.findAll();
@@ -51,6 +54,7 @@ public class UserService {
             throw new IllegalArgumentException("Um usuário com esse username ou e-mail já existe");
         }else {
             userRepository.save(user);
+            _eventService.send("Um usuário foi criado! ID:"+user.getId());
             return "Usuário criado com sucesso!";
         }
     }
@@ -81,15 +85,15 @@ public class UserService {
 
         if(request.getUsername() != null && !request.getUsername().isEmpty()) user.setUsername(request.getUsername());
         if(request.getEmail() != null && !request.getEmail().isEmpty()) user.setEmail(request.getEmail());
+        if(request.getDescription() != null && !request.getDescription().isEmpty()) user.setDescription(request.getDescription());
         if(request.getPassword() != null && !request.getPassword().isEmpty()) user.setPassword(encoder.encode(request.getPassword()));
         userRepository.save(user);
 
         return user;
     }
 
-    public String followUser(String id, @NotNull CreateFollowUserRequest request) {
-        String userId = request.getUserId();
-
+    public String followUser(String id) {
+        String userId = _jwtService.getLoggedUserId();
         //Usuario a ser seguido
         Optional<User>  OptFollowedUser = userRepository.findById(id);
         User followedUser = OptFollowedUser.get();
@@ -118,7 +122,11 @@ public class UserService {
     }
 
     public void deleteUser(String id) throws ChangeSetPersister.NotFoundException {
+        String userId = _jwtService.getLoggedUserId();
         Optional<User> user = userRepository.findById(id);
+        if(!Objects.equals(userId, id)){
+            throw new IllegalArgumentException("Você não pode deletar um usuário diferente do seu ID!");
+        }
         userRepository.deleteById(id);
         System.out.println("Usuário deletado com sucesso!");
     }

@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
-
-import com.sysmap.parrot.dto.CreateFollowUserRequest;
 import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.services.UserService;
@@ -87,12 +85,11 @@ public class UserControllerTest {
     @Test
     public void testFollowUser() {
         String id = "user1";
-        CreateFollowUserRequest request = new CreateFollowUserRequest();
-        request.setUserId("user2");
+        String userId = "user2";
 
-        Mockito.when(userService.followUser(id, request)).thenReturn("Now following user2");
+        Mockito.when(userService.followUser(id)).thenReturn("Now following user2");
 
-        ResponseEntity<String> response = userController.followUser(id, request);
+        ResponseEntity<String> response = userController.followUser(id);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Now following user2", response.getBody());
