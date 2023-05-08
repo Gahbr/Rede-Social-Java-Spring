@@ -1,7 +1,7 @@
 # 🦜Parrot - BACKEND
 
 ## 💻 Sobre o projeto
- Esse projeto faz parte do Programa Trainee SysMap de Excelência Full Stack | 3ª edição e trata-se do back-end de uma rede social feita em Java com Spring.
+ Projeto final do Programa Trainee [SysMap](https://sysmap.com.br) de Excelência Full Stack | 3ª edição e trata-se de uma rede social feita em Java com o Framework Spring.
  
 ## 🧰 Tecnologias utilizadas
 
@@ -55,12 +55,13 @@ Default output format [None]: json
  
  ![terminal](https://user-images.githubusercontent.com/80289718/236905442-d81e9d9f-0035-48ce-816a-6e0506f0cdc1.jpg)
 
+## ⚠️⚠️⚠️
   ```diff
 @@ CASO VOCÊ PARE O CONTAINER, TERÁ QUE CRIAR O BUCKET NOVAMENTE ! @@
 ```
- <h3 style="color:red">🚏 PS: Caso você pare o container, você terá que criar o bucket novamente</h3> 
+ 🚏 Isso acontece porque estamos utilizando uma versão gratuita do [Localstack](https://localstack.cloud) </h3> 
   
-### Agora você está pronto para utilizar o sistema!
+* Após ter concluido as configurações iniciais, você está pronto para utilizar o sistema!
 
  <br>
 
