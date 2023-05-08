@@ -2,6 +2,7 @@ package com.sysmap.parrot.services;
 
 import com.sysmap.parrot.dto.AuthenticateResponse;
 import com.sysmap.parrot.dto.CreateLoginRequest;
+import com.sysmap.parrot.dto.CreateRegisterUserRequest;
 import com.sysmap.parrot.entities.Followers;
 import com.sysmap.parrot.repository.UserRepository;
 import com.sysmap.parrot.entities.Following;
@@ -10,7 +11,6 @@ import com.sysmap.parrot.dto.CreateUserRequest;
 import com.sysmap.parrot.services.broker.IEventService;
 import com.sysmap.parrot.services.fileUpload.IFileUploadService;
 import com.sysmap.parrot.services.security.IJWTService;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -22,25 +22,29 @@ import java.util.*;
 
 @AllArgsConstructor
 @Service
-public class UserService {
+public class UserService implements IUserService {
     private final UserRepository userRepository;
     private IJWTService _jwtService;
     private IFileUploadService _fileUploadService;
     @Autowired
     private IEventService _eventService;
 
+    @Override
     public List<User> getAllUsers(){
         return userRepository.findAll();
     }
 
+    @Override
     public Optional<User> getUserByUsername(String username){
         return userRepository.findByUsername(username);
     }
+    @Override
     public Optional<User> getUserById(String userId){
         return userRepository.findById(userId);
     }
 
-    public String createUser(CreateUserRequest request){
+    @Override
+    public String createUser(CreateRegisterUserRequest request){
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
         var user = new User(request.getUsername(), request.getEmail(), encoder.encode(request.getPassword()));
         user.setFollowing(new ArrayList<>());
@@ -59,6 +63,7 @@ public class UserService {
         }
     }
 
+    @Override
     public AuthenticateResponse login(CreateLoginRequest request){
         Optional<User> optionalUser = userRepository.findByEmail(request.getEmail());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
@@ -78,6 +83,7 @@ public class UserService {
         }
     }
 
+    @Override
     public User editUser(String id, CreateUserRequest request) {
         Optional<User> optionalUser = userRepository.findById(id);
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(5);
@@ -92,6 +98,7 @@ public class UserService {
         return user;
     }
 
+    @Override
     public String followUser(String id) {
         String userId = _jwtService.getLoggedUserId();
         //Usuario a ser seguido
@@ -105,9 +112,16 @@ public class UserService {
         boolean isAlreadyFollowing = user.getFollowing().stream()
                 .flatMap(f -> f.getUsers().stream())
                 .anyMatch(id::equals);
-
-        if(userId.isBlank()) return "Insira um userID";
-        else if(isAlreadyFollowing) return "Você já segue esse usuário!";
+        if(id.equals(userId)) return "Você não pode seguir a si mesmo!";
+        if(isAlreadyFollowing)  {
+            user.getFollowing().forEach(follow -> follow.getUsers().removeIf(id::equals));
+            user.getFollowing().removeIf(follow -> follow.getUsers().isEmpty());
+            followedUser.getFollowers().forEach(follower -> follower.getUsers().removeIf(userId::equals));
+            followedUser.getFollowers().removeIf(follow -> follow.getUsers().isEmpty());
+            userRepository.save(user);
+            userRepository.save(followedUser);
+            return "Você deixou de seguir o usuário";
+        }
         else {
             Following follow = new Following(Collections.singletonList(id));
             Followers follower = new Followers(Collections.singletonList(userId));
@@ -121,6 +135,7 @@ public class UserService {
         }
     }
 
+    @Override
     public void deleteUser(String id) throws ChangeSetPersister.NotFoundException {
         String userId = _jwtService.getLoggedUserId();
         Optional<User> user = userRepository.findById(id);
@@ -131,6 +146,7 @@ public class UserService {
         System.out.println("Usuário deletado com sucesso!");
     }
 
+    @Override
     public String uploadAvatar(MultipartFile photo) throws Exception {
         String id = _jwtService.getLoggedUserId();
         String photoUri = "";

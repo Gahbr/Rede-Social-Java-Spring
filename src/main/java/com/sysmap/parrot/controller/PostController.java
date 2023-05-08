@@ -2,7 +2,7 @@ package com.sysmap.parrot.controller;
 
 import com.sysmap.parrot.entities.Post;
 import com.sysmap.parrot.dto.CreatePostRequest;
-import com.sysmap.parrot.services.PostService;
+import com.sysmap.parrot.services.IPostService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequestMapping("api/v1/posts")
 @AllArgsConstructor
 public class PostController {
-    private PostService postService;
+    private IPostService postService;
 
     @GetMapping
     public ResponseEntity<List<Post>> fetchAllPosts(){

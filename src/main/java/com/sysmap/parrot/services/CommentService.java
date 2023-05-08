@@ -15,12 +15,13 @@ import java.util.*;
 
 @AllArgsConstructor
 @Service
-public class CommentService {
+public class CommentService implements ICommentService {
     private final PostRepository postRepository;
     private IJWTService _jwtService;
     private UserService _userService;
     private PostService _postService;
 
+    @Override
     public List<Comment> getComments(String postId) {
         Optional<Post> optionalPost = _postService.getPostById(postId);
 
@@ -30,6 +31,7 @@ public class CommentService {
         } else throw new NoSuchElementException("Não foi possível encontrar o post com o ID: " + postId);
     }
 
+    @Override
     public Comment getCommentById(String postId, String commentId) {
         Optional<Post> optionalPost = _postService.getPostById(postId);
 
@@ -48,6 +50,7 @@ public class CommentService {
     }
 
 
+    @Override
     public Comment createComment(String postId, CreateCommentRequest request) {
         Optional<Post> optionalPost = _postService.getPostById(postId);
         Optional<User> optionalUser = _userService.getUserById(request.getUserId());
@@ -74,6 +77,7 @@ public class CommentService {
         return comment;
     }
 
+    @Override
     public Comment editComment(String postId, String commentId, CreateCommentRequest request) {
         if (!Objects.equals(request.getUserId(), _jwtService.getLoggedUserId())) {
             throw new NotAuthorizedException("Você não é o autor do comentário!");
@@ -96,6 +100,7 @@ public class CommentService {
         throw new NoSuchElementException("Comentário não encontrado com o ID: " + commentId);
     }
 
+    @Override
     public String deleteComment(String postId, String commentId) {
         Optional<Post> optionalPost = _postService.getPostById(postId);
         if (optionalPost.isEmpty()) {
@@ -122,6 +127,7 @@ public class CommentService {
         return "Comentário deletado!";
     }
 
+    @Override
     public Comment likeComment(String postId, String commentId) {
         String userId = _jwtService.getLoggedUserId();
         Optional<Post> optionalPost = _postService.getPostById(postId);

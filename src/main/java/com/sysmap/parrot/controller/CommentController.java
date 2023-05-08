@@ -2,7 +2,7 @@ package com.sysmap.parrot.controller;
 
 import com.sysmap.parrot.dto.CreateCommentRequest;
 import com.sysmap.parrot.entities.Comment;
-import com.sysmap.parrot.services.CommentService;
+import com.sysmap.parrot.services.ICommentService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import java.util.List;
 @RequestMapping("api/v1/{postId}/comments")
 @AllArgsConstructor
 public class CommentController {
-    private CommentService commentService;
+    private ICommentService commentService;
 
     @GetMapping
     public ResponseEntity<List<Comment>> fetchComments(@PathVariable String postId){

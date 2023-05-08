@@ -18,16 +18,18 @@ import java.util.*;
 
 @AllArgsConstructor
 @Service
-public class PostService {
+public class PostService implements IPostService {
     private final PostRepository postRepository;
     private IJWTService _jwtService;
     private IFileUploadService _fileUploadService;
     private UserService _userService;
 
+    @Override
     public List<Post> getAllPosts(){
         return postRepository.findAll();
     }
 
+    @Override
     public List<Post> getFriendPosts() {
         String userId = _jwtService.getLoggedUserId();
         Optional<User> optionalUser = _userService.getUserById(userId);
@@ -51,10 +53,12 @@ public class PostService {
         return friendPosts;
     }
 
+    @Override
     public Optional<Post> getPostById(String id){
         return postRepository.findById(id);
     }
 
+    @Override
     public Post createPost(MultipartFile photo, String userId, String title, String description){
 
         if(!Objects.equals(userId, _jwtService.getLoggedUserId())){
@@ -86,6 +90,7 @@ public class PostService {
         }
     }
 
+    @Override
     public Post editPost(String id, CreatePostRequest request) {
         Optional<Post> optionalPost = postRepository.findById(id);
         Optional<User> optionalUser = _userService.getUserById(request.getUserId());
@@ -107,6 +112,7 @@ public class PostService {
         return post;
     }
 
+    @Override
     public String likePost(String id) {
         Optional<Post> optionalPost = postRepository.findById(id);
         Post post = optionalPost.get();
@@ -135,6 +141,7 @@ public class PostService {
         }
     }
 
+    @Override
     public String deletePost(String postId){
         Optional<Post> optionalPost = postRepository.findById(postId);
         if (optionalPost.isEmpty()) {

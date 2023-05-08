@@ -1,10 +1,9 @@
 package com.sysmap.parrot.controller;
 
 import com.sysmap.parrot.dto.CreateLoginRequest;
-import com.sysmap.parrot.dto.CreateUserRequest;
+import com.sysmap.parrot.dto.CreateRegisterUserRequest;
 import com.sysmap.parrot.services.UserService;
 import com.sysmap.parrot.dto.AuthenticateResponse;
-import com.sysmap.parrot.services.security.IJWTService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +25,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest request){
+    public ResponseEntity<String> createUser(@Valid @RequestBody CreateRegisterUserRequest request){
         var response = userService.createUser(request);
         return ResponseEntity.status(200).body(response);
     }

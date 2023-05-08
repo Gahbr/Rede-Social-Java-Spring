@@ -2,7 +2,7 @@ package com.sysmap.parrot.controller;
 
 import com.sysmap.parrot.entities.User;
 import com.sysmap.parrot.dto.CreateUserRequest;
-import com.sysmap.parrot.services.UserService;
+import com.sysmap.parrot.services.IUserService;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -19,7 +19,7 @@ import java.util.Optional;
 @RequestMapping("api/v1/profiles")
 @AllArgsConstructor
 public class UserController {
-    private final UserService userService;
+    private final IUserService userService;
 
     @GetMapping
     public ResponseEntity <List<User>> fetchAllUsers(){
