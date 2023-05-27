@@ -21,6 +21,8 @@
 * Docker
 * Localstack
 * Bucket AWS S3
+* Kafka
+* Apache Zookeeper
 
 <br>
 
@@ -39,12 +41,11 @@
 ```
 mvn clean package -DskipTests
 ```
-* Para subir os containers:
+* Para subir o Docker Compose:
 ```
 docker-compose up
 ```
- * Entre no terminal do container do Localstack
- * Insira o comando para definir o usuário padrão 
+ * Entre no terminal do container do Localstack e insira o comando para definir o usuário padrão: 
  ```
 aws configure --profile default
 ```
