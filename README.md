@@ -1,8 +1,11 @@
 # 🦜Parrot - BACKEND
+<p align="center">
+ <img  src="https://user-images.githubusercontent.com/80289718/208725397-62059674-482d-4a24-87ed-a13a0d36f88a.png" width="100px;" alt="Gabriel Ribeiro"/>
+</p>
 
 ## 💻 Sobre o projeto
  Projeto final do Programa Trainee [SysMap](https://sysmap.com.br) de Excelência Full Stack | 3ª edição e trata-se de uma rede social feita em Java com o Framework Spring.
- 
+
 ## 🧰 Tecnologias utilizadas
 
 * Java
@@ -16,8 +19,8 @@
 * Swagger API
 * JWT (JSON Web Token) Authentication
 * Docker
-* Mini IO
-* Kafka
+* Localstack
+* Bucket AWS S3
 
 <br>
 
@@ -30,13 +33,17 @@
 ## 👩‍💻Instalação
 
   * Clone este projeto
-  * Entre na pasta raiz de <i>"backend-rede-social"</i> e abra o arquivo <a href="https://github.com/bc-fullstack-02/Gabriel-Ribeiro/blob/main/backend/backend-rede-social/docker-compose.yaml">docker-compose.yaml</a>
-  * Após isso, insira no terminal o comando abaixo:
-
+  * Entre na pasta raiz de <i>"Gabriel-Ribeiro-Backend"</i> e abra o arquivo <a href="https://github.com/Gahbr/Rede-Social-Java-Spring/blob/master/docker-compose.yaml">docker-compose.yaml</a>
+  * Após isso, insira no terminal o comando abaixo para buildar o back-end:
+  
+```
+mvn clean package -DskipTests
+```
+* Para subir os containers:
 ```
 docker-compose up
 ```
- * Entre no terminal do container do localhost
+ * Entre no terminal do container do Localstack
  * Insira o comando para definir o usuário padrão 
  ```
 aws configure --profile default
@@ -71,7 +78,14 @@ Default output format [None]: json
 ###  ```localhost:8080/swagger-ui/index.html```
 
 ![swagger](https://user-images.githubusercontent.com/80289718/236886929-2b8c53a6-291a-470e-addf-f2cd8a12befe.png)
+### Obs: Não esqueça de fazer a autenticação no swagger antes de fazer as requisições!
+![Screenshot 2023-05-09 110415](https://github.com/bc-fullstack-03/Gabriel-Ribeiro-Backend/assets/80289718/1edaff42-5d46-4e15-bee6-ff8dd479563f)
 
+ ## :construction: Status 
+ ### __**<u>Ambiente de Back-end da Aplicação**</u>__ - [STATUS: Finalizado✅]
+ ### __**<u>Ambiente de Front-end da Aplicação**</u>__ - [STATUS: Finalizado✅] ![Link](https://github.com/Gahbr/Rede-Social-React)
+ ### __**<u>Ambiente de Mobile da Aplicação**</u>__ - [STATUS: Finalizado✅] ![Link](https://github.com/bc-fullstack-02/Gabriel-Ribeiro/tree/main/mobile)
+ 
 ## 🦸 Autor
 
 <a href="https://github.com/Gahbr">
